@@ -13,6 +13,7 @@ public class JwtUtil {
 
     private long expiration = 1000 * 60 * 60; // 1 hour
 
+    @SuppressWarnings("deprecation")
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)

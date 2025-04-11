@@ -53,7 +53,7 @@
 package com.I2I.I2IBaceknd.Controller;
 
 import java.io.IOException;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -146,6 +146,21 @@ public class Eligiblityinq_Controller {
                 .body(documentBytes);
     }
     
+
+    @GetMapping("/api/v1/get_all_documents")
+        public ResponseEntity<List<String>> getAllDocumentNames(@RequestParam Integer id) {
+            List<Map<String, Object>> docs = inq_service.getDocuments(id);
+            
+            if (docs == null || docs.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+
+            // Extract just the document names (keys) from the first map
+            List<String> documentNames = new ArrayList<>(docs.get(0).keySet());
+            
+            return ResponseEntity.ok(documentNames);
+        }
+
 
 
 
