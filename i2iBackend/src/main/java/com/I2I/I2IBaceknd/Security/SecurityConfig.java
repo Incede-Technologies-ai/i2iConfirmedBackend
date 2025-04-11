@@ -12,33 +12,55 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.*;
 
 import com.I2I.I2IBaceknd.Components.JwtFilter;
 import com.I2I.I2IBaceknd.Service.CustomUserDetailsService;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
-    @Autowired
-    CustomUserDetailsService  userDetailsService;
 
-    public SecurityConfig(JwtFilter jwtFilter) 
-    {
+    @Autowired
+    CustomUserDetailsService userDetailsService;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+            .cors() // Enable CORS
+            .and()
+            .csrf().disable()
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/register", "/auth/authenticate").permitAll()
                 .anyRequest().authenticated())
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authenticationProvider(daoAuthenticationProvider()); // ✅ register your provider
+            .authenticationProvider(daoAuthenticationProvider());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // ✅ Proper setup for allowing credentials
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3001")); // Replace with your frontend URL
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true); // Enable this only with allowedOriginPatterns
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -47,18 +69,17 @@ public class SecurityConfig {
         auth.authenticationProvider(daoAuthenticationProvider());
         return auth.build();
     }
+
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService); // THIS IS CRUCIAL
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
         return authProvider;
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }
-

@@ -2,35 +2,50 @@ package com.I2I.I2IBaceknd.Components;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import java.security.Key;
-
 import org.springframework.stereotype.Component;
+
+import java.security.Key;
 import java.util.Date;
 
 @Component
 public class JwtUtil {
-	private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    private long expiration = 1000 * 60 * 60; // 1 hour
+    // Generate a secure key for HMAC SHA-256
+    private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
+    // Token expiration time (1 hour)
+    private final long expiration = 1000 * 60 * 60;
+
+    // Generate JWT token with username as subject
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(secretKey)  // Sign with key directly
                 .compact();
     }
 
+    // Extract username (subject) from the token
     public String extractUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
+    // Validate the token
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException e) {
+            // Can also log e.getMessage() if needed
             return false;
         }
     }

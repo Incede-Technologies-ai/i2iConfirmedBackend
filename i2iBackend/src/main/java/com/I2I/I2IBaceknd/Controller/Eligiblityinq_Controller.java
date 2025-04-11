@@ -64,6 +64,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,6 +77,7 @@ import com.I2I.I2IBaceknd.Commonfn.commonfn;
 import com.I2I.I2IBaceknd.Service.Eligiblityinq_Service;
 
 @RestController
+
 public class Eligiblityinq_Controller {
     
     @Autowired
@@ -101,6 +103,7 @@ public class Eligiblityinq_Controller {
    
     @GetMapping("/api/v1/get_documents")
     public ResponseEntity<byte[]> getDocument(@RequestParam Integer id, @RequestParam String docType) {
+    	
         List<Map<String, Object>> docs = inq_service.getDocuments(id);
 
         System.out.println(docs+"------------");
