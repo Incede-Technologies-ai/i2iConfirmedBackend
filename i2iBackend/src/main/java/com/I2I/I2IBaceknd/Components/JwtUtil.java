@@ -13,10 +13,11 @@ public class JwtUtil {
     // Generate a secure key for HMAC SHA-256
     private final Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    // Token expiration time (1 hour)
+
     private final long expiration = 1000 * 60 * 60;
 
-    // Generate JWT token with username as subject
+    @SuppressWarnings("deprecation")
+
     public String generateToken(String username) {
         return Jwts.builder()
                 .setSubject(username)

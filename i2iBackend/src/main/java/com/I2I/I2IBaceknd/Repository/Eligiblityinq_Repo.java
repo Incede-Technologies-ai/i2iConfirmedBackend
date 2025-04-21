@@ -16,11 +16,6 @@ public class Eligiblityinq_Repo extends dao{
 
 public Map<String, Object> save_inqury(Map<String, Object> param) {
     String sql = "";
-
-
-
-  
-
     // Check if "id" exists to determine whether to perform an INSERT or UPDATE operation
     if (param.get("id") == null) {
         System.out.println("Creating new inquiry...");
