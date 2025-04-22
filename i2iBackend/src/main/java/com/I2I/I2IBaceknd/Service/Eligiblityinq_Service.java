@@ -25,7 +25,7 @@ public class Eligiblityinq_Service {
     private Eligiblityinq_Repo eligiblityinq_Repo;
 
 
-    public Map<String, Object> save_inqury(JSONObject obj,MultipartFile eds1, MultipartFile eds2, MultipartFile eds3, MultipartFile eds4) throws IOException {
+    public Map<String, Object> save_inqury(JSONObject obj,MultipartFile eds1, MultipartFile eds2, MultipartFile eds3, MultipartFile eds4,MultipartFile paySLip) throws IOException {
         Map<String, Object> param = new HashMap<>();
         param.put("id", obj.get("inquiryId"));
         param.put("first_name", obj.get("firstName"));
@@ -33,10 +33,8 @@ public class Eligiblityinq_Service {
         param.put("last_name", obj.get("lastName"));
         param.put("phn_num", obj.get("phone_Number"));
         param.put("email", obj.get("email"));
-
         param.put("residence_start_date", obj.get("residenceStartDate"));
         param.put("application_date", obj.get("application_date"));
-
         param.put("VisaCategory", obj.get("visaCategory"));
         param.put("grossIncome2022", obj.get("grossIncome2022"));
         param.put("grossIncome2023", obj.get("grossIncome2023"));
@@ -53,9 +51,6 @@ public class Eligiblityinq_Service {
         param.put("dependent_children_count", obj.get("dpdt_chldn_cnt"));
         param.put("additional_details", obj.get("application_details"));
         param.put("status", obj.get("status"));
-
-
-
         if (eds1 != null && !eds1.isEmpty()) {
             param.put("eds1", eds1.getBytes());
         }
@@ -68,8 +63,9 @@ public class Eligiblityinq_Service {
          if (eds4 != null && !eds4.isEmpty()) {
             param.put("eds4", eds4.getBytes());
         }
-
-
+        if (paySLip!= null && !paySLip.isEmpty() ){
+            param.put("latest_payslip_bytea", paySLip.getBytes());
+        }
         return (Map<String, Object>) eligiblityinq_Repo.save_inqury(param);
     }
 

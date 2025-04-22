@@ -92,9 +92,10 @@ public class Eligiblityinq_Controller {
         @RequestPart(value = "eds_2022", required = false) MultipartFile eds1,
         @RequestPart(value = "eds_2023", required = false) MultipartFile eds2,
         @RequestPart(value = "eds_2024", required = false) MultipartFile eds3,
-        @RequestPart(value = "eds_2025", required = false) MultipartFile eds4) throws IOException {
+        @RequestPart(value = "eds_2025", required = false) MultipartFile eds4,
+        @RequestPart (value = "latestPayslip",required = false) MultipartFile paySLip) throws IOException {
         JSONObject obj = commonfn.createJSONObject(inquiry_details);
-        return inq_service.save_inqury(obj, eds1, eds2, eds3, eds4);
+        return inq_service.save_inqury(obj, eds1, eds2, eds3, eds4,paySLip);
     }
 
 
