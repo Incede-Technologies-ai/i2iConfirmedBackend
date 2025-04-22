@@ -1,11 +1,15 @@
 package com.I2I.I2IBaceknd.Controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.I2I.I2IBaceknd.Components.JwtUtil;
 import com.I2I.I2IBaceknd.Dao.AuthRequest;
 import com.I2I.I2IBaceknd.Dao.AuthResponse;
+import com.I2I.I2IBaceknd.Dao.AuthResponses;
 import com.I2I.I2IBaceknd.Dao.RegisterRequest;
 import com.I2I.I2IBaceknd.Entitiy.AppUser;
 import com.I2I.I2IBaceknd.Enum.UserRole;
@@ -56,8 +61,15 @@ public class AuthController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         final String token = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new AuthResponse(token));
+        // Extract roles from UserDetails
+        List<String> roles = userDetails.getAuthorities()
+                                        .stream()
+                                        .map(GrantedAuthority::getAuthority)
+                                        .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new AuthResponses(token, roles));
     }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterRequest request) {
         UserRole userRole;
