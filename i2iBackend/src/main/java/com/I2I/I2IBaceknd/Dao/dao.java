@@ -64,6 +64,11 @@ abstract public class dao {
         return jdbcTemplate.update(query);
     }
 
+    public String execute(String query) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.queryForObject(query, String.class);
+    }
+    
     public long executeInsert(String query, List<Object> params) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         KeyHolder keyHolder = new GeneratedKeyHolder();
