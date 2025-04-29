@@ -27,6 +27,7 @@ public class Eligiblityinq_Service {
 
     public Map<String, Object> save_inqury(JSONObject obj,MultipartFile eds1, MultipartFile eds2, MultipartFile eds3, MultipartFile eds4,MultipartFile paySLip) throws IOException {
         Map<String, Object> param = new HashMap<>();
+        String elgbl_str = get_next_elgblity_no();
         param.put("id", obj.get("inquiryId"));
         param.put("first_name", obj.get("firstName"));
         param.put("middle_name", obj.get("middleName"));
@@ -51,6 +52,7 @@ public class Eligiblityinq_Service {
         param.put("dependent_children_count", obj.get("dpdt_chldn_cnt"));
         param.put("additional_details", obj.get("application_details"));
         param.put("status", obj.get("status"));
+        param.put("elgbl_str", elgbl_str);
         if (eds1 != null && !eds1.isEmpty()) {
             param.put("eds1", eds1.getBytes());
         }
@@ -79,6 +81,43 @@ public class Eligiblityinq_Service {
         return eligiblityinq_Repo.getDocumentsById(id);
     }
 
+    public String get_next_elgblity_no() {
+        String lastEligibilityNo = eligiblityinq_Repo.get_next_elgblity_no();
+    
+        if (lastEligibilityNo == null || lastEligibilityNo.isEmpty()) {
+            return "AA001";
+        }
+    
+        // Split prefix and number part
+        String prefix = lastEligibilityNo.substring(0, 2); // e.g., "AA"
+        String numberPart = lastEligibilityNo.substring(2); // e.g., "001"
+    
+        int number = Integer.parseInt(numberPart);
+    
+        if (number < 999) {
+            // Increment the number part
+            number++;
+            return prefix + String.format("%03d", number); // e.g., "AA002"
+        } else {
+            // When number is 999, reset number to 000 and increment prefix
+            char firstChar = prefix.charAt(0);
+            char secondChar = prefix.charAt(1);
+    
+            if (secondChar == 'Z') {
+                // Move first char ahead, reset second to A
+                firstChar++;
+                secondChar = 'A';
+            } else {
+                // Just move second char ahead
+                secondChar++;
+            }
+    
+            String newPrefix = "" + firstChar + secondChar;
+    
+            return newPrefix + "000";
+        }
+    }
+     
 
     
 

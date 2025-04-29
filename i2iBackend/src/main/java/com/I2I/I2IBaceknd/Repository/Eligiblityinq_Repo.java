@@ -23,13 +23,13 @@ public class Eligiblityinq_Repo extends dao{
             sql += "    gross_income_2022, gross_income_2023, gross_income_2024, gross_income_2025, ";
             sql += "    eds_2022, eds_2023, eds_2024, eds_2025, latest_payslip, latest_payslip_bytea, ";
             sql += "    family_members, apply_for_spouse, dependent_children_count, application_date, additional_details, ";
-            sql += "    status, eds_1, eds_2, eds_3, eds_4";
+            sql += "    status,eligibility_no, eds_1, eds_2, eds_3, eds_4";
             sql += "    ) VALUES ( ";
             sql += "    :first_name, :middle_name, :last_name, :phn_num, :email, :residence_start_date, :VisaCategory, ";
             sql += "    :grossIncome2022, :grossIncome2023, :grossIncome2024, :grossIncome2025, ";
             sql += "    :eds2022, :eds2023, :eds2024, :eds2025, :latestPayslip, :latest_payslip_bytea, ";
             sql += "    :family_members, :apply_for_spouse, :dependent_children_count, :application_date, :additional_details, ";
-            sql += "    :status, :eds1, :eds2, :eds3, :eds4";
+            sql += "    :status,:elgbl_str, :eds1, :eds2, :eds3, :eds4";
             sql += "    );";
         } else {
             System.out.println("Updating existing inquiry...");
@@ -57,6 +57,7 @@ public class Eligiblityinq_Repo extends dao{
             sql += "    application_date = :application_date, ";
             sql += "    additional_details = :additional_details, ";
             sql += "    status = :status ";
+            sql += "    eligibility_no:elgbl_str ";
             sql += "WHERE id = :id;";
         }
     
@@ -65,9 +66,12 @@ public class Eligiblityinq_Repo extends dao{
         if (param.get("id") != null) {
             inputParam.put("inquiryId", Long.parseLong(param.get("id").toString()));
             inputParam.put("message", "Updated Successfully");
+            inputParam.put("eligibility No", param.get("elgbl_str"));
         } else {
             inputParam.put("inquiryId", id);
             inputParam.put("message", "Inserted successfully");
+            inputParam.put("eligibility No", param.get("elgbl_str"));
+
         }
         return inputParam;
     }
@@ -174,6 +178,11 @@ public List<Map<String, Object>> getDocumentsById(Integer id) {
     Map<String, Object> param = new HashMap<>();
     param.put("id", id);
     return this.executeQuery(sql,param);
+}
+
+public String get_next_elgblity_no() {
+    String sql = "SELECT eligibility_no FROM public.eligibility_enquiry ORDER BY id DESC LIMIT 1;";
+    return this.execute(sql);
 }
 
 
