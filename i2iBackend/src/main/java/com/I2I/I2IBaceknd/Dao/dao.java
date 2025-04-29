@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -63,11 +64,15 @@ abstract public class dao {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.update(query);
     }
+        public String execute(String sql) {
+            JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+            try {
+                return jdbcTemplate.queryForObject(sql, String.class);
+            } catch (EmptyResultDataAccessException e) {
+                return null; // gracefully return null if no records found
+            }
+        }
 
-    public String execute(String query) {
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForObject(query, String.class);
-    }
     
     public long executeInsert(String query, List<Object> params) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);

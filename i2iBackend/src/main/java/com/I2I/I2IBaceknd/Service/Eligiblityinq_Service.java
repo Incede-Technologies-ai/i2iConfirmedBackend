@@ -25,9 +25,10 @@ public class Eligiblityinq_Service {
     private Eligiblityinq_Repo eligiblityinq_Repo;
 
 
-    public Map<String, Object> save_inqury(JSONObject obj,MultipartFile eds1, MultipartFile eds2, MultipartFile eds3, MultipartFile eds4,MultipartFile paySLip) throws IOException {
+    public Map<String, Object> save_inqury(JSONObject obj,MultipartFile eds1, MultipartFile eds2, MultipartFile eds3,MultipartFile paySLip) throws IOException {
         Map<String, Object> param = new HashMap<>();
         String elgbl_str = get_next_elgblity_no();
+        System.out.println( obj.get("apply_for_spouse")+"helloooooo");
         param.put("id", obj.get("inquiryId"));
         param.put("first_name", obj.get("firstName"));
         param.put("middle_name", obj.get("middleName"));
@@ -42,16 +43,18 @@ public class Eligiblityinq_Service {
         param.put("grossIncome2024", obj.get("grossIncome2024"));
         param.put("grossIncome2025", obj.get("grossIncome2025"));
         param.put("family_members", obj.get("familyMembers"));
-        param.put("eds2022", obj.get("eds2022"));
-        param.put("eds2023", obj.get("eds2023"));
-        param.put("eds2024", obj.get("eds2024"));
-        param.put("eds2025", obj.get("eds2025"));
-        param.put("latestPayslip", obj.get("latestPayslip"));
+        param.put("eds_2022", "minio/eligibility/eds2022_" + elgbl_str + ".pdf");
+        param.put("eds_2023", "minio/eligibility/eds2023_" + elgbl_str + ".pdf");
+        param.put("eds_2024", "minio/eligibility/eds2024_" + elgbl_str + ".pdf");
+        param.put("eds_2025", "minio/eligibility/eds2025_" + elgbl_str + ".pdf");
+        param.put("latest_payslip", "minio/eligibility/latestPayslip_" + elgbl_str + ".pdf");
+        
         param.put("family_numbers", obj.get("family_numbers"));
-        param.put("apply_for_spouse", obj.get("apply_for_spouse"));
-        param.put("dependent_children_count", obj.get("dpdt_chldn_cnt"));
-        param.put("additional_details", obj.get("application_details"));
-        param.put("status", obj.get("status"));
+        boolean applyForSpouse = (boolean) obj.get("apply_for_spouse");
+        param.put("apply_for_spouse",applyForSpouse);
+        param.put("dependent_children_count", obj.get("dependentChildren"));
+        param.put("additional_details", obj.get("message"));
+        param.put("status", obj.get("status") != null ? obj.get("status") : "PENDING");
         param.put("elgbl_str", elgbl_str);
         if (eds1 != null && !eds1.isEmpty()) {
             param.put("eds1", eds1.getBytes());
@@ -62,9 +65,9 @@ public class Eligiblityinq_Service {
         if (eds3 != null && !eds3.isEmpty()) {
             param.put("eds3", eds3.getBytes());
         }
-         if (eds4 != null && !eds4.isEmpty()) {
-            param.put("eds4", eds4.getBytes());
-        }
+        //  if (eds4 != null && !eds4.isEmpty()) {
+        //     param.put("eds4", eds4.getBytes());
+        // }
         if (paySLip!= null && !paySLip.isEmpty() ){
             param.put("latest_payslip_bytea", paySLip.getBytes());
         }
