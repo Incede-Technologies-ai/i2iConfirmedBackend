@@ -53,7 +53,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // ✅ Proper setup for allowing credentials
-        configuration.setAllowedOriginPatterns(List.of("http://localhost:5174")); // Replace with your frontend URL
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:5173")); // Replace with your frontend URL
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true); // Enable this only with allowedOriginPatterns

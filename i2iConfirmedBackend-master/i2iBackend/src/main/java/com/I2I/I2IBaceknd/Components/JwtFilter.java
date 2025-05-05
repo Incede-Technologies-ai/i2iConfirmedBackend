@@ -22,6 +22,15 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return MATCHER.match("/auth/register", path)
+            || MATCHER.match("/auth/authenticate", path)
+            || MATCHER.match("/api/v0/save_inqury", path)
+            || MATCHER.match("/api/v1/save_inqury", path);
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
