@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -113,6 +114,15 @@ public class Eligiblityinq_Controller {
             
             return ResponseEntity.ok(documentNames);
         }
+
+    @PostMapping("/api/v1/update_eligibility_status")
+    public List<Map<String,Object>> upadate_elgbty_status(@RequestBody String param){
+        JSONObject obj = commonfn.createJSONObject(param);
+        return inq_service.updateEligibilityStatus(obj);
+    }
+
+    
+
 
 
 

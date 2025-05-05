@@ -120,6 +120,18 @@ public class Eligiblityinq_Service {
             return newPrefix + "000";
         }
     }
+
+
+    public List<Map<String, Object>> updateEligibilityStatus(JSONObject obj) {
+        Map<String, Object> param2 = new HashMap<>();
+        param2.put("id", obj.get("elgiblty_id"));
+        param2.put("status", obj.get("status"));
+        param2.put("eligibility_no", obj.get("eligibility_no"));
+        param2.put("status_msg", obj.get("status_msg")); // include if needed in return
+    
+        return eligiblityinq_Repo.updateEligibilityStatus(param2);
+    }
+    
      
 
     

@@ -1,5 +1,6 @@
 package com.I2I.I2IBaceknd.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,6 +146,7 @@ public class Eligiblityinq_Repo extends dao{
 public List<Map<String, Object>> getInquiry() {
     String sql = "SELECT " +
              "    id AS inquiryid, " +
+             "    eligibility_no, "+
              "    first_name, " +
              "    middle_name, " +
              "    last_name, " +
@@ -184,6 +186,26 @@ public String get_next_elgblity_no() {
     String sql = "SELECT eligibility_no FROM public.eligibility_enquiry ORDER BY id DESC LIMIT 1;";
     return this.execute(sql);
 }
+
+public List<Map<String, Object>> updateEligibilityStatus(Map<String, Object> param2) {
+    String sql = "UPDATE public.eligibility_enquiry SET status = :status,status_message =:status_msg  WHERE id = :id;";
+    Long id = this.Save(sql, param2, "id");
+
+    Map<String, Object> inputParam = new HashMap<>();
+    inputParam.put("inquiryId", id);
+    inputParam.put("message", "Status updated successfully");
+    
+    if (param2.containsKey("eligibility_no")) {
+        inputParam.put("eligibility_no", param2.get("eligibility_no"));
+    }
+
+    List<Map<String, Object>> result = new ArrayList<>();
+    result.add(inputParam);
+
+    return result;
+}
+
+
 
 
     
